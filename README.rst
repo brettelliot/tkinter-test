@@ -7,7 +7,7 @@ tkinter-test
 References
 ----------
 
-* `auto indent https://www.mmbyte.com/article/9717.html`_
+* auto indent: <https://www.mmbyte.com/article/9717.html>
 * `simple example text editor code https://python-forum.io/Thread-Tkinter-Indentation-for-Tkinter-made-Text-Editor`_
 * `to copy rich text from a clipboard https://github.com/OzymandiasTheGreat/klembord`_
 * `create a toy markdown editor https://www.freecodecamp.org/news/lets-create-a-toy-markdown-editor-with-python-tkinter/`_
