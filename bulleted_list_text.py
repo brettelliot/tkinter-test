@@ -1,4 +1,4 @@
-'''
+"""
 
 This test is heavily adapted from:
 https://stackoverflow.com/questions/63488244/tkinter-text-widget-how-to-indent-automatically-after-a-soft-line-wrap
@@ -11,12 +11,11 @@ Bulleted list requirements
  out of bulleted list mode and just inserts a hypen and a space. (This is google docs behavior.
  Alternatively, MS word gets out of bulleted list mode by making you type cmd-z)
 
-'''
+"""
 
 import tkinter as tk
 from tkinter import font
 
-global_root = tk.Tk()
 
 filler_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor' \
               'incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation' \
@@ -79,27 +78,3 @@ class BulletedListText(tk.Text):
 
             self.see(self.index('insert+1l'))
             return 'break'
-
-
-class MyApp:
-
-    def __init__(self, root):
-        # Create the app
-        self.root = root
-        self.root.title("Bulleted list text test")
-
-        # Set the main frame
-        self.main_frame = tk.Frame(self.root)
-        self.main_frame.pack(expand=True, fill="both", side="top")
-
-        # Create the text box
-        self.text = BulletedListText(wrap="word", borderwidth=0, highlightthickness=0)
-        self.text.pack(in_=self.main_frame, side="top", fill="both", expand=True)
-        self.text.focus()
-
-        # Kick off the main loop
-        self.root.mainloop()
-
-
-if __name__ == "__main__":
-    app = MyApp(global_root)
