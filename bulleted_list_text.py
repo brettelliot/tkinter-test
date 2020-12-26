@@ -5,14 +5,14 @@ Creating a bulleted list:
 * When the first character in a new line one of the bullet characters (asterisk, minus, or plus) start a bulleted list.
 
 Properties of a bulleted list:
-* The bullet character is surrounded by a space on each side.  
-Bulleted list requirements
-* Bullet list editing is kind of like a mode. If your cursor is in a bulleted list, then you're in the mode.
-* Enabling bulleted list mode takes the line, indents it, and adds a bullet.
-* You can get into bulleted list mode by starting a new line and typing a hyphen and then a space
- (or an asterik and then a space). It then auto indents. However if you type hypen space then backspace it kicks you
- out of bulleted list mode and just inserts a hypen and a space. (This is google docs behavior.
- Alternatively, MS word gets out of bulleted list mode by making you type cmd-z)
+* The bullet character is surrounded by a space on each side.
+* The text on the bulleted line soft wraps and is indented to align with the first char in the bulleted line.
+
+Exiting a bulleted list:
+* Given the user is in the middle of making a bulleted list, when they hit return, and then return again,
+first, a new line with new bullet is created, and then that is removed and the bulleted list ends,
+and normal text is inserted afterwards.
+
 
 """
 import tkinter as tk
