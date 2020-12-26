@@ -4,7 +4,8 @@ import pynput
 # The root needs to be created first, then the hot key listener, then the app. No idea why.
 global_root = tk.Tk()
 
-class MyApp:
+
+class HotKeyToggleApp:
 
     def __init__(self, root):
 
@@ -27,10 +28,7 @@ class MyApp:
         self.main_frame = tk.Frame(self.root)
         self.main_frame.pack(expand=True, fill="both", side="top")
 
-        # Create the text box
-        self.text = tk.Text(wrap="word", borderwidth=0, highlightthickness=0)
-        self.text.pack(in_=self.main_frame, side="top", fill="both", expand=True)
-        self.text.focus()
+        self.create_widgets(self.main_frame)
 
         # Handle quitting nicely
         self.root.protocol("WM_DELETE_WINDOW", self.safe_quit)
@@ -61,6 +59,12 @@ class MyApp:
             self.root.update()
             # print(self.root.winfo_screen())
 
+    def create_widgets(self, main_frame):
+        # Create the text box
+        self.text = tk.Text(wrap="word", borderwidth=0, highlightthickness=0)
+        self.text.pack(in_=main_frame, side="top", fill="both", expand=True)
+        self.text.focus()
+
 
 if __name__ == "__main__":
-    app = MyApp(global_root)
+    app = HotKeyToggleApp(global_root)

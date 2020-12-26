@@ -4,6 +4,13 @@ tkinter-test
 
 ``tkinter-test`` is just my repository for testing tkinter stuff.
 
+Descriptions
+------------
+* bullet_pad.py: Simple app that tests the bulleted list text widget and hot key toggle app functionality
+* bulleted_list_text.py: Text widget with simple bulleted list logic
+* bulleted_list_text_app.py: App for testing the BulletedListText widget
+* hot_key_toggle_app.py: Application class (and test app) that opens and closes using global hot keys
+
 References
 ----------
 

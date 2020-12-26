@@ -1,8 +1,11 @@
 """
+The BulletedListText widget adds simple bulleted list functionality to the standard text widget.
 
-This test is heavily adapted from:
-https://stackoverflow.com/questions/63488244/tkinter-text-widget-how-to-indent-automatically-after-a-soft-line-wrap
+Creating a bulleted list:
+* When the first character in a new line one of the bullet characters (asterisk, minus, or plus) start a bulleted list.
 
+Properties of a bulleted list:
+* The bullet character is surrounded by a space on each side.  
 Bulleted list requirements
 * Bullet list editing is kind of like a mode. If your cursor is in a bulleted list, then you're in the mode.
 * Enabling bulleted list mode takes the line, indents it, and adds a bullet.
@@ -12,16 +15,8 @@ Bulleted list requirements
  Alternatively, MS word gets out of bulleted list mode by making you type cmd-z)
 
 """
-
 import tkinter as tk
 from tkinter import font
-
-
-filler_text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor' \
-              'incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation' \
-              'ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in ' \
-              'voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non ' \
-              'proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
 
 
 class BulletedListText(tk.Text):
