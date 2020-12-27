@@ -9,6 +9,10 @@ Properties of a bulleted list:
 * The text on the bulleted line soft wraps and is indented to align with the first char in the bulleted line.
 
 Exiting a bulleted list:
+* Given the user is in the middle of making a bulleted list, when they hit return the indention level is reduced, once
+per return, all the way to zero.
+
+Old:
 * Given the user is in the middle of making a bulleted list, when they hit return, and then return again,
 first, a new line with new bullet is created, and then that is removed and the bulleted list ends,
 and normal text is inserted afterwards.
@@ -16,6 +20,9 @@ and normal text is inserted afterwards.
 Todo:
 * Hitting enter on a indented bullet should create another indented bullet (with infinite levels)
 * Deal with clicking into an existing bulleted list and adding another bullet
+
+ - Second list. Now for an indent...
+   - Wow! It worked. Hmm. Something is off though. Is the lmargin1 correct? How about the lmargin2?
 
   - 2
   - 2 aslkfjklasdjf lksj
@@ -30,6 +37,7 @@ import re
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.ERROR)
 
 
 class BulletedListText(tk.Text):
@@ -39,11 +47,13 @@ class BulletedListText(tk.Text):
 
         # tags
         self.bullet_char = '-'
+        self.num_spaces_per_indent = 4
+        self.num_spaces_after_bullet = 2
         font_name = font.nametofont(self.cget("font"))
-        # how much to indent the first line of a chunk of text, equal to two spaces
-        self.indent_width = font_name.measure('  ')
-        # how much to indent successive lines of a chunk of text, equal to the width of the bullet char and 1 space
-        self.bullet_width = font_name.measure(f'{self.bullet_char} ')
+        # how much to indent the first line of a chunk of text
+        self.indent_width = font_name.measure(self.num_spaces_per_indent * ' ')
+        # how much to indent successive lines of a chunk of text
+        self.bullet_width = font_name.measure(f'{self.bullet_char}{self.num_spaces_after_bullet *" "}')
 
         # events
         self.bullet_sym = ['minus', 'asterisk', 'plus']
@@ -110,8 +120,8 @@ class BulletedListText(tk.Text):
         # Then insert the bullet tag
         bullet_tag = self.bullet_tag(level)
         self.tag_add(bullet_tag, f'{line}.0', f'{line}.1')
-        # Then insert the space
-        self.insert(f'{line}.1', ' ')
+        # Then insert the spaces after the bullet
+        self.insert(f'{line}.1', f'{self.num_spaces_after_bullet * " "}')
         # Finally add the bulleted text tag for the whole new line
         bullet_text_tag = self.bullet_text_tag(level)
         self.tag_add(bullet_text_tag, f'{line}.1', f'{line}.end+1c')
@@ -149,7 +159,7 @@ class BulletedListText(tk.Text):
             if any('bullet' in s for s in tags):
                 # If the user hit return on a bulleted line and the return was the hit just after a previous return
                 # meaning the user hit return twice, then get out of bulleted list mode.
-                if col == 2:
+                if col == self.num_spaces_after_bullet + 1:
                     self.remove_bullet(line)
                 # Otherwise, just add a another bullet
                 else:
@@ -164,6 +174,6 @@ class BulletedListText(tk.Text):
             # Check if the user hit tab on a bulleted line
             if any('bullet' in s for s in tags):
                 # If the user hit tab at the start an bulleted line, then indent it
-                if col == 2:
+                if col == self.num_spaces_after_bullet + 1:
                     self.insert_bullet(line, self.ilevel(line)+1)
         return 'break'
