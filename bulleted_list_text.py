@@ -19,6 +19,10 @@ Todo:
 """
 import tkinter as tk
 from tkinter import font
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class BulletedListText(tk.Text):
@@ -34,14 +38,12 @@ class BulletedListText(tk.Text):
         # how much to indent successive lines of a chunk of text
         lmargin2 = lmargin1 + font_name.measure(self.bullet_char)
 
-        debug_tags = True
-        if debug_tags:
+        if logging.DEBUG >= logger.level:
             self.tag_configure("bullet", lmargin1=lmargin1, background="red")
             self.tag_configure("bullet_text", lmargin1=lmargin2, lmargin2=lmargin2, background="green")
         else:
             self.tag_configure("bullet", lmargin1=lmargin1)
             self.tag_configure("bullet_text", lmargin1=lmargin2, lmargin2=lmargin2)
-
 
         # events
         self.bullet_sym = ['minus', 'asterisk', 'plus']
@@ -59,22 +61,26 @@ class BulletedListText(tk.Text):
         c = int(position.split('.')[1])
 
         if event.keysym in self.bullet_sym and c == 0:
-            print(f'{position}: Creating first bullet of a bulleted list')
+            logger.debug(f'{position}: Creating first bullet of a bulleted list')
+            # add the bullet character at the beginning of the current line
             self.insert(f'{l}.0', f'{self.bullet_char}')
+            # now add the bullet tag around the bullet char
             self.tag_add('bullet', f'{l}.0', f'{l}.1')
+            # insert a space after the bullet char
             self.insert(f'{l}.1', ' ')
+            # add the bullet_text tag around the text from the space to the end of the line plus 1 character for the \n
             self.tag_add('bullet_text', f'{l}.1', f'{l}.end+1c')
             return 'break'
         elif event.keysym == 'Return':
             tags = self.tag_names(position)
             if 'bullet_text' in tags:
                 if c == 2:
-                    print(f'{position}: Ending bulleted list')
+                    logger.debug(f'{position}: Ending bulleted list')
                     self.tag_remove('bullet', f'{l}.0', f'{l}.end')
                     self.tag_remove('bullet_text', f'{l}.0', f'{l}.end+1c')
                     self.delete(f'{l}.0', f'{l}.end')
                 else:
-                    print(f'{position}: Adding a bullet to a bulleted list')
+                    logger.debug(f'{position}: Adding a bullet to a bulleted list')
                     self.tag_remove("bullet_text", f'{l + 1}.0-1c', f'{l + 1}.end')
                     self.insert(position, f'\n')
                     self.insert(f'{l+1}.0', f'{self.bullet_char}')
@@ -82,7 +88,7 @@ class BulletedListText(tk.Text):
                     self.insert(f'{l+1}.1', ' ')
                     self.tag_add('bullet_text', f'{l+1}.1', f'{l+1}.end+1c')
             else:
-                print(f'{position}: Adding a regular old new line.')
+                logger.debug(f'{position}: Adding a regular old new line.')
                 self.insert(position, f'\n')
 
             self.see(self.index('insert+1l'))

@@ -1,7 +1,12 @@
 import tkinter as tk
 from bulleted_list_text import BulletedListText
+import logging
+
 
 global_root = tk.Tk()
+logger = logging.getLogger(__name__)
+logging.getLogger().addHandler(logging.StreamHandler())
+logger.setLevel(logging.DEBUG)
 
 
 class MyApp:
