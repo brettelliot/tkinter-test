@@ -13,6 +13,8 @@ Exiting a bulleted list:
 first, a new line with new bullet is created, and then that is removed and the bulleted list ends,
 and normal text is inserted afterwards.
 
+Todo:
+* Deal with clicking into an existing bulleted list and adding another bullet
 
 """
 import tkinter as tk
@@ -27,10 +29,19 @@ class BulletedListText(tk.Text):
         # tags
         self.bullet_char = '-'
         font_name = font.nametofont(self.cget("font"))
-        lmargin1 = font_name.measure(self.bullet_char)
-        lmargin2 = lmargin1 + font_name.measure(self.bullet_char + ' ')
-        self.tag_configure("bullet", lmargin1=lmargin1)
-        self.tag_configure("bullet_text", lmargin1=lmargin2, lmargin2=lmargin2)
+        # how much to indent the first line of a chunk of text
+        lmargin1 = font_name.measure('mm')
+        # how much to indent successive lines of a chunk of text
+        lmargin2 = lmargin1 + font_name.measure(self.bullet_char)
+
+        debug_tags = True
+        if debug_tags:
+            self.tag_configure("bullet", lmargin1=lmargin1, background="red")
+            self.tag_configure("bullet_text", lmargin1=lmargin2, lmargin2=lmargin2, background="green")
+        else:
+            self.tag_configure("bullet", lmargin1=lmargin1)
+            self.tag_configure("bullet_text", lmargin1=lmargin2, lmargin2=lmargin2)
+
 
         # events
         self.bullet_sym = ['minus', 'asterisk', 'plus']
@@ -47,29 +58,32 @@ class BulletedListText(tk.Text):
         l = int(position.split('.')[0])
         c = int(position.split('.')[1])
 
-        # apply formatting accordingly
         if event.keysym in self.bullet_sym and c == 0:
-            # print("Creating first bullet of a bulleted list")
+            print(f'{position}: Creating first bullet of a bulleted list')
             self.insert(f'{l}.0', f'{self.bullet_char}')
             self.tag_add('bullet', f'{l}.0', f'{l}.1')
             self.insert(f'{l}.1', ' ')
-            self.tag_add('bullet_text', f'{l}.1', 'end+1c')
+            self.tag_add('bullet_text', f'{l}.1', f'{l}.end+1c')
             return 'break'
         elif event.keysym == 'Return':
             tags = self.tag_names(position)
             if 'bullet_text' in tags:
-                # print("Adding a bullet to a bulleted list")
-                self.tag_remove("bullet_text", f'{l + 1}.0-1c', 'end')
-                self.insert(position, f'\n')
-                self.insert(f'{l+1}.0', f'{self.bullet_char}')
-                self.tag_add('bullet', f'{l+1}.0', f'{l+1}.1')
-                self.insert(f'{l+1}.1', ' ')
-                self.tag_add('bullet_text', f'{l+1}.1', 'end+1c')
+                if c == 2:
+                    print(f'{position}: Ending bulleted list')
+                    self.tag_remove('bullet', f'{l}.0', f'{l}.end')
+                    self.tag_remove('bullet_text', f'{l}.0', f'{l}.end+1c')
+                    self.delete(f'{l}.0', f'{l}.end')
+                else:
+                    print(f'{position}: Adding a bullet to a bulleted list')
+                    self.tag_remove("bullet_text", f'{l + 1}.0-1c', f'{l + 1}.end')
+                    self.insert(position, f'\n')
+                    self.insert(f'{l+1}.0', f'{self.bullet_char}')
+                    self.tag_add('bullet', f'{l+1}.0', f'{l+1}.1')
+                    self.insert(f'{l+1}.1', ' ')
+                    self.tag_add('bullet_text', f'{l+1}.1', f'{l+1}.end+1c')
             else:
-                # print("Ending bulleted list")
+                print(f'{position}: Adding a regular old new line.')
                 self.insert(position, f'\n')
-                self.tag_remove('bullet', f'{l + 1}.0-1c', 'end')
-                self.tag_remove('bullet_text', f'{l + 1}.0-1c', 'end')
 
             self.see(self.index('insert+1l'))
             return 'break'

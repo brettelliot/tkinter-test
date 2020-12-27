@@ -25,4 +25,5 @@ References
 * spell check and bold: <https://stackoverflow.com/questions/3732605/add-advanced-features-to-a-tkinter-text-widget>
 * bullet editor: <https://stackoverflow.com/questions/63488244/tkinter-text-widget-how-to-indent-automatically-after-a-soft-line-wrap>
 * using pynput for key events instead of tkinter: <https://stackoverflow.com/questions/61755350/using-pynput-for-key-events-instead-of-tkinter>
+* custom bind tags: <https://stackoverflow.com/questions/7659069/apply-tags-in-a-text-widget>
 
