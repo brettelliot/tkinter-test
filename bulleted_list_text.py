@@ -3,8 +3,8 @@ from tkinter import font
 import logging
 
 logger = logging.getLogger(__name__)
-# logger.setLevel(logging.DEBUG)
-logger.setLevel(logging.ERROR)
+logger.setLevel(logging.DEBUG)
+# logger.setLevel(logging.ERROR)
 
 
 class BulletedListText(tk.Text):
@@ -26,6 +26,10 @@ class BulletedListText(tk.Text):
     * When hitting enter at the middle of a non-empty bullet, don't delete the text from the line. just start a
     new bullet with that text.
     """
+
+    '''
+    oooo-oo
+    '''
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -99,9 +103,12 @@ class BulletedListText(tk.Text):
                     bullet_text_tag,
                     # how much to indent the first line of a chunk of text
                     lmargin1=(self.indent_width * level),
+                    # lmargin1=(self.two_spaces),
                     # how much to indent successive lines of a chunk of text
                     lmargin2=(self.indent_width * level) + self.bullet_width,
+                    # lmargin2=(self.indent_width * level) + self.three_spaces,
                     background='green')
+
             else:
                 self.tag_configure(
                     bullet_text_tag,
