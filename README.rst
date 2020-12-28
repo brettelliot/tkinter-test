@@ -27,4 +27,5 @@ References
 * using pynput for key events instead of tkinter: <https://stackoverflow.com/questions/61755350/using-pynput-for-key-events-instead-of-tkinter>
 * custom bind tags: <https://stackoverflow.com/questions/7659069/apply-tags-in-a-text-widget>
 * Nested indents via tags: <https://stackoverflow.com/questions/13798930/tkinter-insert-text-with-a-given-margin>
+* readonly non-deletabel characters in a text widget: <https://stackoverflow.com/questions/65473241/can-i-have-non-deletable-characters-in-an-editable-tkinter-text-widget>
 

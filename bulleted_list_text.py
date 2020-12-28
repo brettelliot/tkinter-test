@@ -17,19 +17,16 @@ class BulletedListText(tk.Text):
     beginning of a bullet.  You can un-indent sub-bullets by hitting the return key, once for each level until you
     exit from the bulleted list.
 
-    Todo:
+    Todo for the bulleted list text widget:
     * The lmargin2 doesn't align with the second space.
-    * You shouldn't be able to backspace the two spaces and the bullet character.
-    * Add undo and redo
-    * Auto scroll when adding text at the bottom of the widget
     * When hitting tab at the start of a non-empty bullet, don't delete the text from the line. just indent.
     * When hitting enter at the middle of a non-empty bullet, don't delete the text from the line. just start a
     new bullet with that text.
-    """
 
-    '''
-    oooo-oo
-    '''
+    Todo for bullet pad:
+    * Add undo and redo
+    * Auto scroll when adding text at the bottom of the widget
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -48,6 +45,8 @@ class BulletedListText(tk.Text):
             self.bind(f'<KeyPress-{b}>', self.apply_format)
         self.bind('<KeyPress-Return>', self.apply_format)
         self.bind('<KeyPress-Tab>', self.apply_format)
+        self.bind('<KeyPress-BackSpace>', self.on_backspace)
+        self.bind('<KeyPress-Delete>', self.on_backspace)
 
         # book keeping
         self.bullet_tag_levels = {}
@@ -193,3 +192,24 @@ class BulletedListText(tk.Text):
                     self.remove_bullet(line, level)
                     self.insert_bullet(line, level+1)
         return 'break'
+
+    def on_backspace(self, event):
+        # current position - 1 (this is before insertion)
+        position = self.index('insert')
+
+        # convert line and character to int
+        line = int(position.split('.')[0])
+        col = int(position.split('.')[1])
+
+        # Get all the tags for the current cursor position
+        tags = self.tag_names(position)
+        level = self.level_from_tags(tags)
+
+        if any("bullet" in s for s in tags):
+            if col in [0,1,2,3]:
+                if level > 0:
+                    # If the user hit backspace on a bulleted line and the cursor is one of the
+                    # bulleted characters then don't delete the character but un-indent
+                    self.remove_bullet(line, level)
+                    self.insert_bullet(line, level-1)
+                    return 'break'
