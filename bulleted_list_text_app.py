@@ -22,7 +22,7 @@ class MyApp:
 
         # Create the text box
         self.text = BulletedListText(wrap="word", borderwidth=0, highlightthickness=0)
-        self.text.configure(font=("Courier", 16))
+        # self.text.configure(font=("Courier", 16))
         self.text.pack(in_=self.main_frame, side="top", fill="both", expand=True)
         self.text.focus()
 
