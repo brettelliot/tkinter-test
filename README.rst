@@ -28,4 +28,5 @@ References
 * custom bind tags: <https://stackoverflow.com/questions/7659069/apply-tags-in-a-text-widget>
 * Nested indents via tags: <https://stackoverflow.com/questions/13798930/tkinter-insert-text-with-a-given-margin>
 * readonly non-deletabel characters in a text widget: <https://stackoverflow.com/questions/65473241/can-i-have-non-deletable-characters-in-an-editable-tkinter-text-widget>
+* save if modified: <https://sureshsubedi.wordpress.com/2015/07/20/how-to-make-a-simple-but-robust-text-editor-in-tkinter/>
 
