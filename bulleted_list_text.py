@@ -3,8 +3,8 @@ from tkinter import font
 import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-# logger.setLevel(logging.ERROR)
+# logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.ERROR)
 
 
 class BulletedListText(tk.Text):
@@ -18,11 +18,14 @@ class BulletedListText(tk.Text):
     exit from the bulleted list.
 
     Todo for the bulleted list text widget:
-    * When hitting tab at the start of a non-empty bullet, don't delete the text from the line. just indent.
-    * When hitting enter at the middle of a non-empty bullet, don't delete the text from the line. just start a
-    new bullet with that text.
-    * handle a font change (probs need to reset the *.width properties and recreate the tags.
+    * handle a font change (probs need to reset the *.width properties and recreate the tags).
     * clicking into the bullet character area should move the cursor to the first character after the bullet chars
+    * shift tab should un-indent without messing the lines text
+    * Unit tests for this biatch
+    * If you're under a bulleted line but not on a bulleted line and you backspace and end up at the end of the bulleted
+     line then if you hit enter, it should create a new bullet.
+     * Hitting cmd and left arrow on a bulleted line takes me to the front of the bulleted chars. It should take me to
+     the end of the bulleted chars (ie: where I can start editing).
 
     Todo for bullet pad:
     * Add undo and redo
@@ -109,7 +112,7 @@ class BulletedListText(tk.Text):
         bullet_text_tag = self.bullet_text_tag(level)
         self.tag_remove(bullet_text_tag, f'{line}.0', f'{line}.end+1c')
         # Delete any text on the line which would include the bullet and extra added space
-        self.delete(f'{line}.0', f'{line}.end')
+        self.delete(f'{line}.0', f'{line}.{self.bullet_chars_end_col}')
 
     def on_keypress(self, event: tk.Event):
         # current position - 1 (this is before insertion)
@@ -144,7 +147,6 @@ class BulletedListText(tk.Text):
                 # Otherwise, just add a another bullet
                 else:
                     self.insert(position, f'\n')
-                    self.remove_bullet(line + 1, level)
                     self.insert_bullet(line + 1, level)
                     return 'break'
             # If the user hit return when not in a bulleted line, just add a regular new line
