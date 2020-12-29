@@ -22,7 +22,7 @@ class BulletedListText(tk.Text):
     * When hitting enter at the middle of a non-empty bullet, don't delete the text from the line. just start a
     new bullet with that text.
     * handle a font change (probs need to reset the *.width properties and recreate the tags.
-    * clicking into the red (bullet tag area) and typing is possible but shouldn't be.
+    * clicking into the bullet character area should move the cursor to the first character after the bullet chars
 
     Todo for bullet pad:
     * Add undo and redo
@@ -50,12 +50,7 @@ class BulletedListText(tk.Text):
 
         # events
         self.bullet_sym = ['minus', 'asterisk', 'plus']
-        for b in self.bullet_sym:
-            self.bind(f'<KeyPress-{b}>', self.on_keypress)
-        self.bind('<KeyPress-Return>', self.on_keypress)
-        self.bind('<KeyPress-Tab>', self.on_keypress)
-        self.bind('<KeyPress-BackSpace>', self.on_keypress)
-        self.bind('<KeyPress-Delete>', self.on_keypress)
+        self.bind('<KeyPress>', self.on_keypress)
 
         # book keeping
         self.bullet_text_tag_levels = {}
@@ -177,3 +172,17 @@ class BulletedListText(tk.Text):
                         self.remove_bullet(line, level)
                         self.insert_bullet(line, level - 1)
                         return 'break'
+
+        elif event.keysym == 'Left':
+            if level > 0 and col <= self.bullet_chars_end_col:
+                # Someones used the left arrow to access the bullet character space. Don't let them
+                self.mark_set('insert', f'{line}.{self.bullet_chars_end_col}')
+                return 'break'
+
+        # Any other keypress
+        else:
+            if level > 0 and col < self.bullet_chars_end_col:
+                # Someones typing in the bullet character space. Don't let them
+                self.mark_set('insert', f'{line}.{self.bullet_chars_end_col}')
+                return 'break'
+
