@@ -18,7 +18,6 @@ class BulletedListText(tk.Text):
     exit from the bulleted list.
 
     Todo for the bulleted list text widget:
-    * The lmargin2 doesn't align with the second space.
     * When hitting tab at the start of a non-empty bullet, don't delete the text from the line. just indent.
     * When hitting enter at the middle of a non-empty bullet, don't delete the text from the line. just start a
     new bullet with that text.
@@ -38,8 +37,9 @@ class BulletedListText(tk.Text):
         self.bullet_char = '-'
         # The number of spaces to put after the bullet character before the text on the bulleted line
         self.num_spaces_after_bullet = 2
-        # The column number where the bullet tag ends and the bullet text tag should begin
-        self.bullet_tag_end_col = len(f'{self.bullet_char}{self.num_spaces_after_bullet * " "}')
+        # The column number where the last of the bullet characters are
+        self.bullet_chars_end_col = len(f'{self.bullet_char}{self.num_spaces_after_bullet * " "}')
+        logger.debug(f'{self.bullet_chars_end_col=}')
         # The number of spaces for each indent level
         self.num_spaces_per_indent = 4
 
@@ -58,7 +58,6 @@ class BulletedListText(tk.Text):
         self.bind('<KeyPress-Delete>', self.on_backspace)
 
         # book keeping
-        self.bullet_tag_levels = {}
         self.bullet_text_tag_levels = {}
 
     def level_from_tags(self, tags):
@@ -78,22 +77,6 @@ class BulletedListText(tk.Text):
             logger.error(f'Detected line with bullet tags from multiple levels: {tags}')
             return min(level_set)
 
-    def bullet_tag(self, level):
-        if level < 1:
-            return ''
-        elif level in self.bullet_tag_levels:
-            return self.bullet_tag_levels[level]
-        else:
-            bullet_tag = f'bullet_l{level}'
-            # how much to indent the first line of a bulleted line
-            lmargin1 = (self.indent_width * level)
-            if logging.DEBUG >= logger.level:
-                self.tag_configure(bullet_tag, lmargin1=lmargin1, background='red')
-            else:
-                self.tag_configure(bullet_tag, lmargin1=lmargin1)
-            self.bullet_tag_levels[level] = bullet_tag
-            return bullet_tag
-
     def bullet_text_tag(self, level):
         if level < 1:
             return ''
@@ -102,9 +85,9 @@ class BulletedListText(tk.Text):
         else:
             bullet_text_tag = f'bullet_text_l{level}'
             # how much to indent the first line of a bulleted line
-            lmargin1 = (self.indent_width * level) + self.bullet_width
-            # how much to indent successive lines of a chunk of text
-            lmargin2 = (self.indent_width * level) + self.bullet_width,
+            lmargin1 = (self.indent_width * level)
+            # how much to indent successive lines of a bulleted line
+            lmargin2 = (self.indent_width * level) + self.bullet_width
             if logging.DEBUG >= logger.level:
                 self.tag_configure(bullet_text_tag, lmargin1=lmargin1, lmargin2=lmargin2, background='green')
             else:
@@ -120,22 +103,14 @@ class BulletedListText(tk.Text):
             logger.error(f'insert_bullet: being called with {line=} {level=}')
             return
 
-        # Insert the bullet char and spaces, then tag that section with bullet_tag
+        # Insert the bullet char and spaces, then tag the line with bullet_text_tag
         logger.debug(f'Inserting bullet: {line=} {level=}')
-        bullet_tag = self.bullet_tag(level)
-        self.insert(f'{line}.0', f'{self.bullet_char}{self.num_spaces_after_bullet * " "}')
-        self.tag_add(bullet_tag, f'{line}.0', f'{line}.{self.bullet_tag_end_col}')
-        # Finally add the bulleted text tag for the whole new line
         bullet_text_tag = self.bullet_text_tag(level)
-        # Todo: figure out why we need a -1 here, and how to get the bullet_text_tag right
-        self.tag_add(bullet_text_tag, f'{line}.{self.bullet_tag_end_col-1}', f'{line}.end+1c')
+        self.insert(f'{line}.0', f'{self.bullet_char}{self.num_spaces_after_bullet * " "}')
+        self.tag_add(bullet_text_tag, f'{line}.0', f'{line}.end+1c')
 
     def remove_bullet(self, line, level):
-        # Remove the bullet tag from the start of the line
         logger.debug(f'Removing bullet: {line=} {level=}')
-        bullet_tag = self.bullet_tag(level)
-        self.tag_remove(bullet_tag, f'{line}.0', f'{line}.{self.bullet_tag_end_col}')
-        # Remove the bullet_text tag from the whole line
         bullet_text_tag = self.bullet_text_tag(level)
         self.tag_remove(bullet_text_tag, f'{line}.0', f'{line}.end+1c')
         # Delete any text on the line which would include the bullet and extra added space
@@ -144,7 +119,7 @@ class BulletedListText(tk.Text):
     def apply_format(self, event: tk.Event):
         # current position - 1 (this is before insertion)
         position = self.index('insert')
-        # logger.debug(f'{position=}')
+        logger.debug(f'{position}: on_apply_format')
 
         # convert line and character to int
         line = int(position.split('.')[0])
@@ -165,7 +140,7 @@ class BulletedListText(tk.Text):
                 # If the user hit return on a bulleted line and the return was the hit just after a previous return
                 # meaning the user hit return twice, reduce the indentation level of that line (possibly ending
                 # the bulleted list).
-                if col <= self.bullet_tag_end_col:
+                if col <= self.bullet_chars_end_col:
                     # First remove any bullets on the line
                     self.remove_bullet(line, level)
                     self.insert_bullet(line, level - 1)
@@ -185,8 +160,9 @@ class BulletedListText(tk.Text):
         elif event.keysym == 'Tab':
             # Check if the user hit tab on a bulleted line
             if level > 0:
+                logger.debug(f'{position=}')
                 # If the user hit tab at the start an bulleted line, then indent it
-                if col <= self.bullet_tag_end_col:
+                if col <= self.bullet_chars_end_col:
                     self.remove_bullet(line, level)
                     self.insert_bullet(line, level + 1)
                     return 'break'
@@ -204,7 +180,7 @@ class BulletedListText(tk.Text):
         level = self.level_from_tags(tags)
 
         if any("bullet" in s for s in tags):
-            if col < self.bullet_tag_end_col:
+            if col <= self.bullet_chars_end_col:
                 if level > 0:
                     # If the user hit backspace on a bulleted line and the cursor is one of the
                     # bulleted characters then don't delete the character but un-indent
