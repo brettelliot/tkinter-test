@@ -1,5 +1,6 @@
 import tkinter as tk
 import pynput
+from AppKit import NSWorkspace
 
 # The root needs to be created first, then the hot key listener, then the app. No idea why.
 global_root = tk.Tk()
@@ -14,6 +15,7 @@ class HotKeyToggleApp:
         self.hotkeys = pynput.keyboard.GlobalHotKeys({
             '<cmd>+<shift>': self.on_hot_key_press})
         self.hotkeys.start()
+        self.my_name = NSWorkspace.sharedWorkspace().activeApplication()['NSApplicationName']
 
         # Then create the app
         self.root = root
@@ -41,7 +43,29 @@ class HotKeyToggleApp:
             self.stop_listener = True
         self.root.destroy()
 
+
     def on_hot_key_press(self):
+        active_app = NSWorkspace.sharedWorkspace().activeApplication()['NSApplicationName']
+        if self.stop_listener:
+            return False
+        elif self.root.state() == 'withdrawn' or active_app != self.my_name:
+            self.root.app_on_top = True
+            self.root.lift()
+            self.root.deiconify()
+            self.root.focus_force()
+            self.root.grab_set()
+            self.root.grab_release()
+            self.text.focus()
+        else:
+            self.root.withdraw()
+
+        self.root.update()
+
+        #     # print(self.root.winfo_pointerx())
+        #     # print(self.root.winfo_viewable())
+        #     print(self.root.winfo_ismapped())
+        return
+
         if self.stop_listener:
             return False
         else:
