@@ -22,7 +22,7 @@ class MyListener(Listener):
 
 
 def on_press(key):
-    # print('> {} ({})'.format(str(key), listener.canonical(key)))
+    print('> {} ({})'.format(str(key), listener.canonical(key)))
     pass
 
 

@@ -41,6 +41,7 @@ class HotKeyToggleApp:
     def safe_quit(self):
         if not self.stop_listener:
             self.stop_listener = True
+        self.hotkeys.stop()
         self.root.destroy()
 
 
@@ -60,28 +61,6 @@ class HotKeyToggleApp:
             self.root.withdraw()
 
         self.root.update()
-
-        #     # print(self.root.winfo_pointerx())
-        #     # print(self.root.winfo_viewable())
-        #     print(self.root.winfo_ismapped())
-        return
-
-        if self.stop_listener:
-            return False
-        else:
-            self.root.app_on_top = not self.root.app_on_top
-            # print("app_on_top = {}", self.root.app_on_top)
-            if self.root.app_on_top:
-                self.root.lift()
-                self.root.deiconify()
-                self.root.focus_force()
-                self.root.grab_set()
-                self.root.grab_release()
-                self.text.focus()
-            else:
-                self.root.withdraw()
-            self.root.update()
-            # print(self.root.winfo_screen())
 
     def create_widgets(self, main_frame):
         # Create the text box
