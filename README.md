@@ -1,19 +1,8 @@
-============
-tkinter-test
-============
+# tkinter-test
 
 ``tkinter-test`` is just my repository for testing tkinter stuff.
 
-Descriptions
-------------
-* bullet_pad.py: Simple app that tests the bulleted list text widget and hot key toggle app functionality
-* bulleted_list_text.py: Text widget with simple bulleted list logic
-* bulleted_list_text_app.py: App for testing the BulletedListText widget
-* hot_key_toggle_app.py: Application class (and test app) that opens and closes using global hot keys
-
-References
-----------
-
+## References
 * auto indent: <https://www.mmbyte.com/article/9717.html>
 * simple example text editor: <code >https://python-forum.io/Thread-Tkinter-Indentation-for-Tkinter-made-Text-Editor>
 * to copy rich text from a clipboard: <https://github.com/OzymandiasTheGreat/klembord>
@@ -29,4 +18,5 @@ References
 * Nested indents via tags: <https://stackoverflow.com/questions/13798930/tkinter-insert-text-with-a-given-margin>
 * readonly non-deletabel characters in a text widget: <https://stackoverflow.com/questions/65473241/can-i-have-non-deletable-characters-in-an-editable-tkinter-text-widget>
 * save if modified: <https://sureshsubedi.wordpress.com/2015/07/20/how-to-make-a-simple-but-robust-text-editor-in-tkinter/>
+* add widgets to a text widget: <https://tkdocs.com/tutorial/text.html>
 
