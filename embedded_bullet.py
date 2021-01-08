@@ -38,16 +38,11 @@ class EmbeddedBulletText(tk.Text):
 if __name__ == "__main__":
 
     root = tk.Tk()
-    # var = tk.StringVar()
-    # var.set("Hey!? How are you doing?")
 
     text = EmbeddedBulletText(root, width=40, height=15)
     text.insert("end", "Rich Text Example\n", "h1")
 
     text.pack(fill="both", expand=True)
-
-    # my_label = tk.Label(text, textvariable=var)
-    # text.window_create('end', window=my_label)
 
     text.insert("end", "Hello, world\n\n")
     text.insert_bullet("end", "Item 1\n")
