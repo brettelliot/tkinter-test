@@ -19,4 +19,7 @@
 * readonly non-deletabel characters in a text widget: <https://stackoverflow.com/questions/65473241/can-i-have-non-deletable-characters-in-an-editable-tkinter-text-widget>
 * save if modified: <https://sureshsubedi.wordpress.com/2015/07/20/how-to-make-a-simple-but-robust-text-editor-in-tkinter/>
 * add widgets to a text widget: <https://tkdocs.com/tutorial/text.html>
+* copying and pasting as html: <https://stackoverflow.com/questions/15724936/copying-formatted-text-from-text-widget-in-tkinter>
+* implementing paste into the text widget: <https://stackoverflow.com/questions/6950007/pasting-in-the-tkinter-text-widget>
+* richxerox example <https://stackoverflow.com/questions/32959928/accessing-alternate-clipboard-formats-from-python>
 
